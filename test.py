@@ -37,6 +37,7 @@ import numpy as np
 import cv2 
 from matplotlib import pyplot
 import matplotlib.animation as animation
+# from deepface import DeepFace
 
 haar_cascade_face = cv2.CascadeClassifier('haarcascades\\haarcascade_frontalface_alt2.xml')
 
@@ -60,17 +61,17 @@ cam = cv2.VideoCapture(1)
 fig = pyplot.figure()
 plt = fig.add_subplot(1,1,1)
 
-def capture(i):
+while True:
     check, img_raw = cam.read()
     img_raw = cv2.flip(img_raw, 1)
 
     img_faces = detect_faces(haar_cascade_face, img_raw)
     img_rgb = cv2.cvtColor(img_faces, cv2.COLOR_BGR2RGB)
 
-    plt.clear()
-    plt.imshow(img_rgb)
+    cv2.imshow('Cam', img_faces)
 
-ani = animation.FuncAnimation(fig, capture, interval=1000/30)
-pyplot.show()
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 
 cam.release()
+cv2.destroyAllWindows()
