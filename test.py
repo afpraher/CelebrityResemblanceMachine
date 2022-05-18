@@ -1,38 +1,3 @@
-# import cv2
-# from matplotlib import pyplot
-# import matplotlib.animation as animation
-# from mtcnn.mtcnn import MTCNN
-
-# cam = cv2.VideoCapture(1)
-
-# fig = pyplot.figure()
-# plt = fig.add_subplot(1,1,1)
-
-# detector = MTCNN()
-
-# def capture(i):
-#     check, img_raw = cam.read()
-
-#     results = detector.detect_faces(img_raw)
-
-#     x1, y1, width, height = results[0]['box']
-#     x2, y2 = x1 + width, y1 + height
-
-#     # TODO: Bound rect coordinates
-    
-#     img_rect = cv2.rectangle(img_raw, (x1,y1), (x2,y2), (0,255,0), 5)
-#     img_rgb = cv2.cvtColor(img_rect, cv2.COLOR_BGR2RGB)
-
-#     plt.clear()
-#     plt.imshow(img_rgb)
-
-# ani = animation.FuncAnimation(fig, capture, interval=1000/30)
-# pyplot.show()
-
-# cam.release()
-
-#####
-
 import numpy as np
 import cv2 
 from matplotlib import pyplot
@@ -55,7 +20,7 @@ def detect_faces(cascade, test_image, scaleFactor = 1.1):
         
     return image_copy
 
-cam = cv2.VideoCapture(1)
+cam = cv2.VideoCapture(0)
 
 fig = pyplot.figure()
 plt = fig.add_subplot(1,1,1)
