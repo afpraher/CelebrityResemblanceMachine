@@ -1,5 +1,6 @@
 import numpy as np
 import cv2 
+import face_recognition
 from matplotlib import pyplot
 import matplotlib.animation as animation
 # from deepface import DeepFace
@@ -33,6 +34,7 @@ while True:
     img_faces = detect_faces(haar_cascade_face, img_raw)
     img_rgb = cv2.cvtColor(img_faces, cv2.COLOR_BGR2RGB)
 
+    model 
     cv2.imshow('Cam', img_faces)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
