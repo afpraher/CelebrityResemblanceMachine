@@ -15,6 +15,7 @@ while True:
         top, left, bottom, right = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
 
         cv2.putText(frame, name, (top, left -10), cv2.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2)
+        cv2.putText(frame, f'({filename})', (top, left+30), cv2.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2)
         cv2.rectangle(frame, (left, top), (right, bottom), (0,0,200), 4)
 
     cv2.imshow("Frame", frame)

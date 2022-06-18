@@ -70,7 +70,7 @@ class SimpleFacerec:
         face_locations = face_recognition.face_locations(rgb_small_frame)
         face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
 
-        matches_person = []
+        matches_people = []
         matches_filenames = []
         for face_encoding in face_encodings:
             for person in self.known_people:
@@ -78,20 +78,20 @@ class SimpleFacerec:
                 matches = face_recognition.compare_faces(self.known_face_encodings[person], face_encoding)
 
                 if True in matches:
-                    # If a match was found in known_face_encodings, just use the first one.
-                    first_match_index = matches.index(True)
-                    filename = self.known_face_filenames[person][first_match_index]
-                    matches_filenames.append(filename)
-
-                    # Or instead, use the known face with the smallest distance to the new face
-                    # face_distances = face_recognition.face_distance(self.known_face_encodings[person], face_encoding)
-                    # best_match_index = np.argmin(face_distances)
-                    # filename = self.known_face_filenames[person][best_match_index]
+                    # # If a match was found in known_face_encodings, just use the first one.
+                    # first_match_index = matches.index(True)
+                    # filename = self.known_face_filenames[person][first_match_index]
                     # matches_filenames.append(filename)
 
-                    matches_person.append(person)
+                    # Or instead, use the known face with the smallest distance to the new face
+                    face_distances = face_recognition.face_distance(self.known_face_encodings[person], face_encoding)
+                    best_match_index = np.argmin(face_distances)
+                    filename = self.known_face_filenames[person][best_match_index]
+                    matches_filenames.append(filename)
+
+                    matches_people.append(person)
 
         # Convert to numpy array to adjust coordinates with frame resizing quickly
         face_locations = np.array(face_locations)
         face_locations = face_locations / self.frame_resizing
-        return face_locations.astype(int), matches_filenames
+        return face_locations.astype(int), matches_filenames, matches_people
