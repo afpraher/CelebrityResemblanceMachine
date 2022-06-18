@@ -1,43 +1,66 @@
 import face_recognition
 import cv2
-import os
-import glob
 import numpy as np
+from glob import glob
+from os import path
+
+from tqdm import tqdm
 
 class SimpleFacerec:
     def __init__(self):
-        self.known_face_encodings = []
-        self.known_face_names = []
+        self.known_people = []
+
+        # key = Name, val = List of encodings/filenames
+        self.known_face_encodings = {}
+        self.known_face_filenames = {}
 
         # Resize frame for a faster speed
         self.frame_resizing = 0.25
 
-    def load_encoding_images(self, images_path):
+    def load_encoding_images(self, database_path):
         """
         Load encoding images from path
-        :param images_path:
+        :param database_path:
         :return:
         """
         # Load Images
-        images_path = glob.glob(os.path.join(images_path, "*.*"))
+        people_path = glob(path.join(database_path, '*'))
+        n_images = len(glob(path.join(database_path, '*/*.*')))
 
-        print("{} encoding images found.".format(len(images_path)))
+        print('Loading database:')
 
         # Store image encoding and names
-        for img_path in images_path:
-            img = cv2.imread(img_path)
-            rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        with tqdm(total=n_images) as pbar:
+            for person_path in people_path:
 
-            # Get the filename only from the initial file path.
-            basename = os.path.basename(img_path)
-            (filename, ext) = os.path.splitext(basename)
-            # Get encoding
-            img_encoding = face_recognition.face_encodings(rgb_img)[0]
+                name = path.basename(person_path)
+                encodings = []
+                filenames = []
 
-            # Store file name and file encoding
-            self.known_face_encodings.append(img_encoding)
-            self.known_face_names.append(filename)
-        print("Encoding images loaded")
+                faces_path = glob(path.join(person_path, '*.png'))
+                for face_path in faces_path:
+                    img = cv2.imread(face_path)
+                    rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+                    # Get the filename only from the initial file path.
+                    basename = path.basename(face_path)
+                    (filename, ext) = path.splitext(basename)
+
+                    # Get encoding
+                    try:
+                        img_encoding = face_recognition.face_encodings(rgb_img)[0]
+
+                        # Store file name and file encoding
+                        encodings.append(img_encoding)
+                        filenames.append(filename)
+                    except IndexError:
+                        pass
+                    finally:
+                        pbar.update()
+
+                self.known_people.append(name)
+                self.known_face_encodings.update({name: encodings})
+                self.known_face_filenames.update({name: filenames})
 
     def detect_known_faces(self, frame):
         small_frame = cv2.resize(frame, (0, 0), fx=self.frame_resizing, fy=self.frame_resizing)
@@ -47,25 +70,28 @@ class SimpleFacerec:
         face_locations = face_recognition.face_locations(rgb_small_frame)
         face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
 
-        face_names = []
+        matches_person = []
+        matches_filenames = []
         for face_encoding in face_encodings:
-            # See if the face is a match for the known face(s)
-            matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
-            name = "Unknown"
+            for person in self.known_people:
+                # See if the face is a match for the known face(s)
+                matches = face_recognition.compare_faces(self.known_face_encodings[person], face_encoding)
 
-            # # If a match was found in known_face_encodings, just use the first one.
-            # if True in matches:
-            #     first_match_index = matches.index(True)
-            #     name = known_face_names[first_match_index]
+                if True in matches:
+                    # If a match was found in known_face_encodings, just use the first one.
+                    first_match_index = matches.index(True)
+                    filename = self.known_face_filenames[person][first_match_index]
+                    matches_filenames.append(filename)
 
-            # Or instead, use the known face with the smallest distance to the new face
-            face_distances = face_recognition.face_distance(self.known_face_encodings, face_encoding)
-            best_match_index = np.argmin(face_distances)
-            if matches[best_match_index]:
-                name = self.known_face_names[best_match_index]
-            face_names.append(name)
+                    # Or instead, use the known face with the smallest distance to the new face
+                    # face_distances = face_recognition.face_distance(self.known_face_encodings[person], face_encoding)
+                    # best_match_index = np.argmin(face_distances)
+                    # filename = self.known_face_filenames[person][best_match_index]
+                    # matches_filenames.append(filename)
+
+                    matches_person.append(person)
 
         # Convert to numpy array to adjust coordinates with frame resizing quickly
         face_locations = np.array(face_locations)
         face_locations = face_locations / self.frame_resizing
-        return face_locations.astype(int), face_names
+        return face_locations.astype(int), matches_filenames
