@@ -2,11 +2,11 @@ import cv2
 from simple_facerec import SimpleFacerec
 
 sfr = SimpleFacerec()
-if not sfr.load_database("./DummyCelebs"):
-    sfr.load_encoding_images("./DummyCelebs")
-    sfr.save_database("./DummyCelebs")
+if not sfr.load_database("./Celebs"):
+    sfr.load_encoding_images("./Celebs")
+    sfr.save_database("./Celebs")
 
-cap = cv2.VideoCapture(0)   
+cap = cv2.VideoCapture(0)
 
 while True:
     ret,frame = cap.read()

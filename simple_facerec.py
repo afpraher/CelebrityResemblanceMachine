@@ -10,9 +10,9 @@ class SimpleFacerec:
     def __init__(self):
         self.known_people = []
 
-        # key = Name, val = List of encodings/filenames
+        # key = Name, val = List of encodings/files
         self.known_face_encodings = {}
-        self.known_face_filenames = {}
+        self.known_face_files = {}
 
         # Resize frame for a faster speed
         self.frame_resizing = 0.25
@@ -35,16 +35,12 @@ class SimpleFacerec:
 
                 name = path.basename(person_path)
                 encodings = []
-                filenames = []
+                files = []
 
                 faces_path = glob(path.join(person_path, '*.png'))
                 for face_path in faces_path:
                     img = cv2.imread(face_path)
                     rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-                    # Get the filename only from the initial file path.
-                    basename = path.basename(face_path)
-                    (filename, ext) = path.splitext(basename)
 
                     # Get encoding
                     try:
@@ -52,7 +48,7 @@ class SimpleFacerec:
 
                         # Store file name and file encoding
                         encodings.append(img_encoding)
-                        filenames.append(filename)
+                        files.append(face_path)
                     except IndexError:
                         pass
                     finally:
@@ -60,7 +56,7 @@ class SimpleFacerec:
 
                 self.known_people.append(name)
                 self.known_face_encodings.update({name: encodings})
-                self.known_face_filenames.update({name: filenames})
+                self.known_face_files.update({name: files})
 
     def save_database(self, database_path, file = 'database.npy'):
         db = np.array([self.known_people, self.known_face_files, self.known_face_encodings], dtype=object)
@@ -109,7 +105,7 @@ class SimpleFacerec:
                     # Or instead, use the known face with the smallest distance to the new face
                     face_distances = face_recognition.face_distance(self.known_face_encodings[person], face_encoding)
                     best_match_index = np.argmin(face_distances)
-                    filename = self.known_face_filenames[person][best_match_index]
+                    filename = self.known_face_files[person][best_match_index]
                     matches_filenames.append(filename)
 
                     matches_people.append(person)
