@@ -81,7 +81,7 @@ class SimpleFacerec:
         print('Done')
         return True
 
-    def detect_known_faces(self, frame):
+    def detect_known_faces(self, frame, tolerance=0.6):
         small_frame = cv2.resize(frame, (0, 0), fx=self.frame_resizing, fy=self.frame_resizing)
         # Find all the faces and face encodings in the current frame of video
         # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
@@ -94,7 +94,7 @@ class SimpleFacerec:
         for face_encoding in face_encodings:
             for person in self.known_people:
                 # See if the face is a match for the known face(s)
-                matches = face_recognition.compare_faces(self.known_face_encodings[person], face_encoding)
+                matches = face_recognition.compare_faces(self.known_face_encodings[person], face_encoding, tolerance=tolerance)
 
                 if True in matches:
                     # # If a match was found in known_face_encodings, just use the first one.

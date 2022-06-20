@@ -1,6 +1,13 @@
+from simple_facerec import SimpleFacerec
+from argparse import ArgumentParser
+from matplotlib import pyplot
+from pathlib import Path
 import numpy as np
 import cv2
-from matplotlib import pyplot
+
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw
 
 haar_cascade_face = cv2.CascadeClassifier('haarcascades\\haarcascade_frontalface_alt2.xml')
 
@@ -40,27 +47,51 @@ def detect_faces(cascade, test_image):
     except AttributeError: pass
 
     check = len(faces_rect)>0
-    return (check, image_copy, image_face)
+    return (check, image_copy, image_face, image_face_pos)
 
-cam = cv2.VideoCapture(0)
+def crm(cam: int, database: Path):
+    sfr = SimpleFacerec()
+    if not sfr.load_database(database):
+        sfr.load_encoding_images(database)
+        sfr.save_database(database)
 
-fig = pyplot.figure()
-plt = fig.add_subplot(1,1,1)
+    cam = cv2.VideoCapture(cam)
 
-while True:
+    fig = pyplot.figure()
+    plt = fig.add_subplot(1,1,1)
 
-    # Get image from webcam
-    check, img_raw = cam.read()
-    img_raw = cv2.flip(img_raw, 1)
+    while True:
 
-    check, img, img_face = detect_faces(haar_cascade_face, img_raw)
-    
+        # Get image from webcam
+        check, img_raw = cam.read()
+        img_raw = cv2.flip(img_raw, 1)
 
-    cv2.imshow('Cam', img)
+        check, img, img_face, img_face_pos = detect_faces(haar_cascade_face, img_raw)
+        if check:
+            face_locations, face_files, face_names = sfr.detect_known_faces(img)
+            if(len(face_names)>0):
+                # cv2.addText(img, face_names[0], (img_face_pos[0], img_face_pos[1]+img_face_pos[3]+20), 'Comic Sans')
+                pil_img = Image.fromarray(img)
+                draw = ImageDraw.Draw(pil_img)
+                font = ImageFont.truetype('ComicSansMS3.ttf', 30)
+                draw.text((img_face_pos[0], img_face_pos[1]+img_face_pos[3]+10), face_names[0], (0,0,0), font=font)
+                img = np.array(pil_img)
 
-    # Press q to exit
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
 
-cam.release()
-cv2.destroyAllWindows()
+        cv2.imshow('Cam', img)
+
+        # Press q to exit
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cam.release()
+    cv2.destroyAllWindows()
+
+if __name__ == '__main__':
+    parser = ArgumentParser(prog="crm")
+    parser.add_argument('cam', type=int, help='Camera ID')
+    parser.add_argument('--database', type=Path, required=False, default='./Celebs', help='Database')
+    args = parser.parse_args()
+
+    print("Press 'q' to quit")
+    crm(args.cam, args.database)
