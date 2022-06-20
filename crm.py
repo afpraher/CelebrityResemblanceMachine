@@ -72,11 +72,15 @@ def crm(cam: int, database: Path):
             if(len(face_names)>0):
                 # cv2.addText(img, face_names[0], (img_face_pos[0], img_face_pos[1]+img_face_pos[3]+20), 'Comic Sans')
                 pil_img = Image.fromarray(img)
+                match_img = cv2.cvtColor(np.array(Image.open(face_files[0])), cv2.COLOR_RGB2BGR)
+                match_img = Image.fromarray(match_img)
+                match_img = match_img.resize((img_face_pos[2], img_face_pos[3]))
+                pil_img.paste(match_img, box=(img_face_pos[0]+img_face_pos[2]+10, img_face_pos[1]))
+
                 draw = ImageDraw.Draw(pil_img)
                 font = ImageFont.truetype('ComicSansMS3.ttf', 30)
                 draw.text((img_face_pos[0], img_face_pos[1]+img_face_pos[3]+10), face_names[0], (0,0,0), font=font)
                 img = np.array(pil_img)
-
 
         cv2.imshow('Cam', img)
 
