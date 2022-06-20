@@ -62,6 +62,29 @@ class SimpleFacerec:
                 self.known_face_encodings.update({name: encodings})
                 self.known_face_filenames.update({name: filenames})
 
+    def save_database(self, database_path, file = 'database.npy'):
+        db = np.array([self.known_people, self.known_face_files, self.known_face_encodings], dtype=object)
+        np.save(path.join(database_path, file), db)
+
+    def load_database(self, database_path, file = 'database.npy'):
+        """
+        Load database from path
+        Returns True if loading was successful else False
+        """
+
+        db_path = path.join(database_path, file)
+        if not path.exists(db_path): return False
+
+        print('Loading database from file')
+
+        db = np.load(db_path, allow_pickle=True)
+        self.known_people = db[0]
+        self.known_face_files = db[1]
+        self.known_face_encodings = db[2]
+
+        print('Done')
+        return True
+
     def detect_known_faces(self, frame):
         small_frame = cv2.resize(frame, (0, 0), fx=self.frame_resizing, fy=self.frame_resizing)
         # Find all the faces and face encodings in the current frame of video
