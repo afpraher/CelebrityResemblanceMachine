@@ -60,6 +60,14 @@ def crm(cam: int, database: Path):
     fig = pyplot.figure()
     plt = fig.add_subplot(1,1,1)
 
+    max_count = 10
+    count = 0
+
+    face_found = False
+    current_image = None
+    current_name = ""
+
+
     while True:
 
         # Get image from webcam
@@ -68,19 +76,66 @@ def crm(cam: int, database: Path):
 
         check, img, img_face, img_face_pos = detect_faces(haar_cascade_face, img_raw)
         if check:
-            face_locations, face_files, face_names = sfr.detect_known_faces(img)
+            face_locations, face_files, face_names = sfr.detect_known_faces(img_face)
             if(len(face_names)>0):
+                
                 # cv2.addText(img, face_names[0], (img_face_pos[0], img_face_pos[1]+img_face_pos[3]+20), 'Comic Sans')
                 pil_img = Image.fromarray(img)
                 match_img = cv2.cvtColor(np.array(Image.open(face_files[0])), cv2.COLOR_RGB2BGR)
                 match_img = Image.fromarray(match_img)
                 match_img = match_img.resize((img_face_pos[2], img_face_pos[3]))
-                pil_img.paste(match_img, box=(img_face_pos[0]+img_face_pos[2]+10, img_face_pos[1]))
 
+                print(count)
+
+                if(face_found != True):
+                    
+                    current_name = face_names[0]
+
+                    pil_img.paste(match_img, box=(img_face_pos[0]+img_face_pos[2]+10, img_face_pos[1]))
+                    draw = ImageDraw.Draw(pil_img)
+                    font = ImageFont.truetype('ComicSansMS3.ttf', 30)
+                    draw.text((img_face_pos[0], img_face_pos[1]+img_face_pos[3]+10),face_names[0], (255,255,255), font=font)
+                    img = np.array(pil_img)
+
+                    current_image = match_img;
+
+                    face_found = True;
+
+                else:
+                    
+                    count = count+1;
+                    pil_img.paste(current_image, box=(img_face_pos[0]+img_face_pos[2]+10, img_face_pos[1]))
+
+                    draw = ImageDraw.Draw(pil_img)
+                    font = ImageFont.truetype('ComicSansMS3.ttf', 30)
+                    draw.text((img_face_pos[0], img_face_pos[1]+img_face_pos[3]+10), current_name, (255,255,255), font=font)
+                    
+                    img = np.array(pil_img)
+
+                    if(count >= max_count):
+                        count = 0;
+                        face_found = False;
+
+            else:
+                pil_img = Image.fromarray(img)
                 draw = ImageDraw.Draw(pil_img)
                 font = ImageFont.truetype('ComicSansMS3.ttf', 30)
-                draw.text((img_face_pos[0], img_face_pos[1]+img_face_pos[3]+10), face_names[0], (0,0,0), font=font)
+                
+                if(current_image != None):
+                    pil_img.paste(current_image, box=(img_face_pos[0]+img_face_pos[2]+10, img_face_pos[1]))
+                
+                if(current_name != None):
+                    draw.text((img_face_pos[0], img_face_pos[1]+img_face_pos[3]+10), current_name, (255,255,255), font=font)
+                else:
+                    draw.text((img_face_pos[0], img_face_pos[1]+img_face_pos[3]+10), "Not found", (255,0,0), font=font)
+
+
+
                 img = np.array(pil_img)
+
+        else:
+            print("anderes else")               
+                
 
         cv2.imshow('Cam', img)
 
