@@ -5,7 +5,7 @@ from matplotlib import pyplot
 import matplotlib.animation as animation
 # from deepface import DeepFace
 
-haar_cascade_face = cv2.CascadeClassifier('haarcascades\\haarcascade_frontalface_alt2.xml')
+haar_cascade_face = cv2.CascadeClassifier('C:\HTL\AUD\Python\CeleRecog\CelebrityResemblanceMachine\haarcascades\haarcascade_frontalface_alt2.xml')
 
 def detect_faces(cascade, test_image, scaleFactor = 1.1):
     # create a copy of the image to prevent any changes to the original one.
