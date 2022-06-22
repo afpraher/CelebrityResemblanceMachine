@@ -85,8 +85,6 @@ def crm(cam: int, database: Path):
                 match_img = Image.fromarray(match_img)
                 match_img = match_img.resize((img_face_pos[2], img_face_pos[3]))
 
-                print(count)
-
                 if(face_found != True):
                     
                     current_name = face_names[0]
@@ -132,9 +130,6 @@ def crm(cam: int, database: Path):
 
 
                 img = np.array(pil_img)
-
-        else:
-            print("anderes else")               
                 
 
         cv2.imshow('Cam', img)
