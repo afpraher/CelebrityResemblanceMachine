@@ -67,6 +67,9 @@ def crm(cam: int, database: Path):
     current_image = None
     current_name = ""
 
+    window = 'Celebrity Resemblance Machine'
+    cv2.namedWindow(window, cv2.WND_PROP_FULLSCREEN)
+    cv2.setWindowProperty(window, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
     while True:
 
@@ -132,7 +135,7 @@ def crm(cam: int, database: Path):
                 img = np.array(pil_img)
                 
 
-        cv2.imshow('Cam', img)
+        cv2.imshow(window, img)
 
         # Press q to exit
         if cv2.waitKey(1) & 0xFF == ord('q'):
