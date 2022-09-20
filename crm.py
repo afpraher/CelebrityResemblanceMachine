@@ -146,7 +146,7 @@ def crm(cam: int, database: Path):
 
 if __name__ == '__main__':
     parser = ArgumentParser(prog="crm")
-    parser.add_argument('cam', type=int, help='Camera ID')
+    parser.add_argument('cam', type=int, default=0, help='Camera ID')
     parser.add_argument('--database', type=Path, required=False, default='./Celebs', help='Database')
     args = parser.parse_args()
 
