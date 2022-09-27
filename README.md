@@ -27,5 +27,5 @@ You will also need CMake.
 Get it from [cmake.org](https://cmake.org/download/)
 
 As well as the Visual Studio Build Tools.
-Make sure to install the workload "Desktop Development for C++"   
+Make sure to install the workload "Desktop Development with C++"   
 You can find the installer here [visualstudio.microsoft.com](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022)
