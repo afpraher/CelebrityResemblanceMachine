@@ -130,11 +130,8 @@ def crm(cam: int, database: Path):
                 else:
                     draw.text((img_face_pos[0], img_face_pos[1]+img_face_pos[3]+10), "Not found", (255,0,0), font=font)
 
-
-
                 img = np.array(pil_img)
                 
-
         wnd_size = cv2.getWindowImageRect(window)
         pil_img = Image.fromarray(img)
         pil_img.thumbnail(wnd_size[2:])

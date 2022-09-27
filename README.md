@@ -14,7 +14,6 @@ For help run `python crm.py --help`
 
 ## Requirements
 
-* cmake
 * argparse
 * matplotlib
 * numpy
@@ -22,9 +21,11 @@ For help run `python crm.py --help`
 * pillow
 * face_recognition
 
-You can use the `requirements.bat` script to automatically install the python libraries.
+You can also use the `requirements.bat` script to automatically install the python libraries.
 
-You will also need the Visual Studio Build Tools.
-Make sure to install "Visual C++ Tools for Cmake" under the "Compilers, build tools and runtimes" section,
-in the Individual Components Tab.   
+You will also need CMake.
+Get it from [cmake.org](https://cmake.org/download/)
+
+As well as the Visual Studio Build Tools.
+Make sure to install the workload "Desktop Development for C++"   
 You can find the installer here [visualstudio.microsoft.com](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022)
