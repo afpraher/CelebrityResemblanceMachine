@@ -98,13 +98,13 @@ def crm(cam: int, database: Path):
                     draw.text((img_face_pos[0], img_face_pos[1]+img_face_pos[3]+10),face_names[0], (255,255,255), font=font)
                     img = np.array(pil_img)
 
-                    current_image = match_img;
+                    current_image = match_img
 
-                    face_found = True;
+                    face_found = True
 
                 else:
                     
-                    count = count+1;
+                    count = count+1
                     pil_img.paste(current_image, box=(img_face_pos[0]+img_face_pos[2]+10, img_face_pos[1]))
 
                     draw = ImageDraw.Draw(pil_img)
@@ -114,8 +114,8 @@ def crm(cam: int, database: Path):
                     img = np.array(pil_img)
 
                     if(count >= max_count):
-                        count = 0;
-                        face_found = False;
+                        count = 0
+                        face_found = False
 
             else:
                 pil_img = Image.fromarray(img)

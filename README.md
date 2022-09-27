@@ -8,12 +8,13 @@ An AI designed to recognise your celebrity lookalike.
 * Open the command line
 * Navigate to the projects folder
 * Install the necessary requirements
-* Run the program using `python crm.py <paramaters>`
+* Run the program using `python crm.py`
 
 For help run `python crm.py --help`
 
 ## Requirements
 
+* cmake
 * argparse
 * matplotlib
 * numpy
@@ -21,13 +22,9 @@ For help run `python crm.py --help`
 * pillow
 * face_recognition
 
-Alternatively you can also use the `requirements.bat` script to automaticall install the python libraries.   
-There is however no guarantee of this script actually working.
+You can use the `requirements.bat` script to automatically install the python libraries.
 
-Apparently you also need CMake.
-Get it from [cmake.org](https://cmake.org/)
-
-## FAQ
-
-What is my cameras ID?   
-> Usually it is 0
+You will also need the Visual Studio Build Tools.
+Make sure to install "Visual C++ Tools for Cmake" under the "Compilers, build tools and runtimes" section,   
+in the Individual Components Tab.
+You can find the install here [visualstudio.microsoft.com](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022)
