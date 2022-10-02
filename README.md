@@ -2,7 +2,17 @@
 
 An AI designed to recognise your celebrity lookalike.
 
-## Setup
+## Automatic Setup
+
+Note:   
+CMake and the Visual Studio Build Tools will still have to be installed manually
+
+* Open the projects folder
+* Execute the `install.ps1` script
+* Open the command line
+* Run `python crm.py`
+
+## Manual Setup
 
 * Extract the `Celebs.zip` file
 * Open the command line
@@ -14,14 +24,13 @@ For help run `python crm.py --help`
 
 ## Requirements
 
+Libraries:
 * argparse
 * matplotlib
 * numpy
 * opencv-python
 * pillow
 * face_recognition
-
-You can also use the `requirements.bat` script to automatically install the python libraries.
 
 You will also need CMake.
 Get it from [cmake.org](https://cmake.org/download/)
