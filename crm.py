@@ -60,7 +60,7 @@ def crm(cam: int, database: Path):
     fig = pyplot.figure()
     plt = fig.add_subplot(1,1,1)
 
-    max_count = 10
+    max_count = 5
     count = 0
 
     face_found = False
@@ -124,11 +124,9 @@ def crm(cam: int, database: Path):
                 
                 if(current_image != None):
                     pil_img.paste(current_image, box=(img_face_pos[0]+img_face_pos[2]+10, img_face_pos[1]))
-                
-                if(current_name != None):
                     draw.text((img_face_pos[0], img_face_pos[1]+img_face_pos[3]+10), current_name, (255,255,255), font=font)
                 else:
-                    draw.text((img_face_pos[0], img_face_pos[1]+img_face_pos[3]+10), "Not found", (255,0,0), font=font)
+                    draw.text((img_face_pos[0], img_face_pos[1]+img_face_pos[3]+10), "Sie sind\neinzigartig!", (255,255,255), font=font)
 
                 img = np.array(pil_img)
                 
